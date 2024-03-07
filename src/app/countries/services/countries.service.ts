@@ -17,6 +17,15 @@ export class CountriesService {
 
   }
 
+
+  public searchCountryById = (id: string): Observable<Country[]>  => {
+    console.log(id);
+    return this.http.get<Country[]>(`${this.api_url}alpha/${id}`)
+                .pipe(
+                  catchError( (error) => of([]) )
+                );
+  }
+
   /**
    *
    * @param capital -> busqueda por capital
