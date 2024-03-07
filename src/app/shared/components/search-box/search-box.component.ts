@@ -22,6 +22,7 @@ export class SearchBoxComponent {
     let searchCapital: string = this.txtInput.nativeElement.value;
     console.log("desde searchBox",searchCapital);
     this.searchByCapital.emit(searchCapital);
+    this.txtInput.nativeElement.value = "";
   }
 
 }
