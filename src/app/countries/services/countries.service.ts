@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, catchError, of, map } from 'rxjs';
+import { Observable, catchError, of, map, delay } from 'rxjs';
 import { Country } from '../interfaces/country';
 
 // url por capital ->https://restcountries.com/v3.1/capital/{capital}
@@ -18,8 +18,22 @@ export class CountriesService {
   }
 
 
+  private getCountriesRequest = ( url: string ): Observable<Country[]> => {
+    return this.http.get<Country[]>( url )
+                .pipe(
+                  catchError( (error) => of([]) ),
+                  delay(2000)
+                );
+  }
+
+  /**
+   *
+   * @param id busqueda por code de paises
+   * @returns en este caso solo retornamos el primer elemento de mi arreglo, es decir, retornamos es un objeto
+   */
+
   public searchCountryById = (id: string): Observable<Country | null >  => {
-    console.log(id);
+    //console.log(id);
     return this.http.get<Country[]>(`${this.api_url}alpha/${id}`)
                 .pipe(
                   map( countries => countries.length > 0 ? countries[0] : null),
@@ -36,10 +50,7 @@ export class CountriesService {
   public searchByCapital = ( capital: string ): Observable<Country[]> => {
    console.log("busqueda por capital desde services -> ", {capital});
    // el of del catchError nos permite retornar un nuevo observable, en este caso un array vacio
-   return this.http.get<Country[]>(`${this.api_url}capital/${capital}`)
-              .pipe(
-                catchError( (error) => of([]) )
-              );
+   return this.getCountriesRequest(`${this.api_url}capital/${capital}`);
   }
 
   /**
@@ -48,10 +59,7 @@ export class CountriesService {
    * @returns retorna un observable de country
    */
   public searchByCountry = ( country: string ): Observable<Country[]> => {
-    return this.http.get<Country[]>(`${this.api_url}name/${country}`)
-                .pipe(
-                  catchError( (error) => of([]))
-                );
+    return this.getCountriesRequest(`${this.api_url}name/${country}`);
   }
 
   /**
@@ -60,10 +68,7 @@ export class CountriesService {
    * @returns retorna un observable de country
    */
   public searcgByRegion = ( region: string ): Observable<Country[]> => {
-    return this.http.get<Country[]>(`${this.api_url}region/${region}`)
-                    .pipe(
-                      catchError( (error) => of([]))
-                    );
+    return this.getCountriesRequest(`${this.api_url}region/${region}`);
   }
 
 }
