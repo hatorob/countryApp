@@ -4,10 +4,12 @@
 <div class="row">
   <div class="col">
     <!-- Search box -->
-    <shared-search-box
+    <!-- Lo quito ya que no lo necesito, vamos a poner botones para que filtre -->
+    <!-- <shared-search-box
       (searchByTerm)="searchByRegion($event)"
       placeholder="Busqueda por región"
-    />
+    /> -->
+    <button class="btn btn-primary m-2" *ngFor="let region of regions" (click)="searchByRegion(region)">{{region}}</button>
   </div>
 </div>
 
