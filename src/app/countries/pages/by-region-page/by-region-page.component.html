@@ -9,7 +9,12 @@
       (searchByTerm)="searchByRegion($event)"
       placeholder="Busqueda por región"
     /> -->
-    <button class="btn btn-primary m-2" *ngFor="let region of regions" (click)="searchByRegion(region)">{{region}}</button>
+    <button
+      class="btn m-2"
+      *ngFor="let region of regions"
+      (click)="searchByRegion(region)"
+      [ngClass]=" { 'btn-outline-danger': selectionRegion === region } "
+    >{{region}}</button>
   </div>
 </div>
 
