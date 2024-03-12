@@ -21,7 +21,7 @@ export class SearchBoxComponent implements OnInit, OnDestroy {
   public placeholder: string = "";
 
   @Output()
-  public searchByCapital: EventEmitter<string> = new EventEmitter();
+  public searchByTerm: EventEmitter<string> = new EventEmitter();
 
   // Lo usamos para la implementación de subject
   ngOnInit(): void {
@@ -30,7 +30,7 @@ export class SearchBoxComponent implements OnInit, OnDestroy {
           debounceTime(1000)
         )
         .subscribe( value => {
-          this.searchByCapital.emit(value);
+          this.searchByTerm.emit(value);
         })
   }
 
