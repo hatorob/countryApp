@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, catchError, of, map, delay } from 'rxjs';
 import { Country } from '../interfaces/country';
+import { CacheStore } from '../interfaces/cache-store.interface';
 
 // url por capital ->https://restcountries.com/v3.1/capital/{capital}
 
@@ -12,6 +13,14 @@ import { Country } from '../interfaces/country';
 export class CountriesService {
 
   private api_url = "https://restcountries.com/v3.1/";
+
+  //! Para mantener la información
+  public cacheStore: CacheStore = {
+    byCapital: { term: '',countries: [] },
+    byCountries: { term: '', countries: [] },
+    byRegion: { region: '', countries: [] }
+  }
+
 
   constructor( private http: HttpClient ) {
 
