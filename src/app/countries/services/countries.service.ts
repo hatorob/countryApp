@@ -24,8 +24,23 @@ export class CountriesService {
 
 
   constructor( private http: HttpClient ) {
-
+    this.loadFromLocalStorage();
   }
+
+
+  //! saveLocalStorage
+
+  public saveLocalStorage = (): void => {
+    localStorage.setItem('cacheStore', JSON.stringify( this.cacheStore ));
+  }
+
+  //! loadFromLocalStorage
+
+  public loadFromLocalStorage = (): void => {
+    if( !localStorage.getItem('cacheStore') ) return;
+    this.cacheStore = JSON.parse( localStorage.getItem('cacheStore')! );
+  }
+
 
 
   private getCountriesRequest = ( url: string ): Observable<Country[]> => {
@@ -62,7 +77,8 @@ export class CountriesService {
    // el of del catchError nos permite retornar un nuevo observable, en este caso un array vacio
    return this.getCountriesRequest(`${this.api_url}capital/${capital}`)
               .pipe(
-                tap( countries => this.cacheStore.byCapital = { term: capital, countries} )
+                tap( countries => this.cacheStore.byCapital = { term: capital, countries} ),
+                tap( () => this.saveLocalStorage() ),
               );
   }
 
@@ -74,7 +90,8 @@ export class CountriesService {
   public searchByCountry = ( country: string ): Observable<Country[]> => {
     return this.getCountriesRequest(`${this.api_url}name/${country}`)
               .pipe(
-                tap( countries => this.cacheStore.byCountries = { term: country, countries} )
+                tap( countries => this.cacheStore.byCountries = { term: country, countries} ),
+                tap( () => this.saveLocalStorage() ),
               );
   }
 
@@ -86,7 +103,8 @@ export class CountriesService {
   public searcgByRegion = ( region: Region ): Observable<Country[]> => {
     return this.getCountriesRequest(`${this.api_url}region/${region}`)
                 .pipe(
-                  tap( countries => this.cacheStore.byRegion = { region, countries} )
+                  tap( countries => this.cacheStore.byRegion = { region, countries} ),
+                  tap( () => this.saveLocalStorage() ),
                 );
   }
 
