@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, catchError, of, map, delay } from 'rxjs';
+import { Observable, catchError, of, map, delay, tap } from 'rxjs';
 import { Country } from '../interfaces/country';
 import { CacheStore } from '../interfaces/cache-store.interface';
+import { Region } from '../interfaces/region.type';
 
 // url por capital ->https://restcountries.com/v3.1/capital/{capital}
 
@@ -59,7 +60,10 @@ export class CountriesService {
   public searchByCapital = ( capital: string ): Observable<Country[]> => {
    console.log("busqueda por capital desde services -> ", {capital});
    // el of del catchError nos permite retornar un nuevo observable, en este caso un array vacio
-   return this.getCountriesRequest(`${this.api_url}capital/${capital}`);
+   return this.getCountriesRequest(`${this.api_url}capital/${capital}`)
+              .pipe(
+                tap( countries => this.cacheStore.byCapital = { term: capital, countries} )
+              );
   }
 
   /**
@@ -68,7 +72,10 @@ export class CountriesService {
    * @returns retorna un observable de country
    */
   public searchByCountry = ( country: string ): Observable<Country[]> => {
-    return this.getCountriesRequest(`${this.api_url}name/${country}`);
+    return this.getCountriesRequest(`${this.api_url}name/${country}`)
+              .pipe(
+                tap( countries => this.cacheStore.byCountries = { term: country, countries} )
+              );
   }
 
   /**
@@ -76,8 +83,11 @@ export class CountriesService {
    * @param region Busqueda por region
    * @returns retorna un observable de country
    */
-  public searcgByRegion = ( region: string ): Observable<Country[]> => {
-    return this.getCountriesRequest(`${this.api_url}region/${region}`);
+  public searcgByRegion = ( region: Region ): Observable<Country[]> => {
+    return this.getCountriesRequest(`${this.api_url}region/${region}`)
+                .pipe(
+                  tap( countries => this.cacheStore.byRegion = { region, countries} )
+                );
   }
 
 }
